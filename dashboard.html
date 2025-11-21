@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BroIsThisFake - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-nav">
+                <a href="dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="index.html" class="nav-link">Analyze</a>
+                <a href="history.html" class="nav-link">History</a>
+                <a href="permissions.html" class="nav-link">Requested Permissions</a>
+            </div>
+            <h1>🔍 BroIsThisFake</h1>
+            <p class="subtitle">Advanced fake banking app detection suite for Pixel Pitch 2025</p>
+        </header>
+
+        <main>
+            <div class="dashboard-section">
+                <div class="dashboard-hero">
+                    <h2>Protect yourself from fake banking apps</h2>
+                    <p class="hero-description">
+                        We check APKs and Play Store listings for suspicious permissions, clone behavior, malicious overlays,
+                        and developer mismatches. Every scan pits the app against our strict dataset-backed rules.
+                    </p>
+                    <p class="hero-description">
+                        Built by <strong>Team 404 Not Found</strong> so anyone can spot fake loan, cashback, KYC, and support apps.
+                    </p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h3>Multi-layer checks</h3>
+                        <p>Permissions, package similarity, malware scan, and Play Store metadata all run automatically.</p>
+                    </div>
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Dataset aware</h3>
+                        <p>Tight integration with the provided 50-app dataset keeps the verdicts grounded and judge-friendly.</p>
+                    </div>
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon">📬</div>
+                        <h3>Evidence kit</h3>
+                        <p>Auto-builds Gmail takedown emails including screenshots, review signals, and detection feed context.</p>
+                    </div>
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Instant feedback</h3>
+                        <p>History combines backend feed + local cache so judges always see the latest scans.</p>
+                    </div>
+                </div>
+
+                <div class="how-it-works">
+                    <h3>How we score each app</h3>
+                    <div class="steps-container">
+                        <div class="step-item glass-card">
+                            <div class="step-number">1</div>
+                            <h4>Gather signals</h4>
+                            <p>Use APK data or Play Store package/link to pull permissions, metadata, and developer info.</p>
+                        </div>
+                        <div class="step-item glass-card">
+                            <div class="step-number">2</div>
+                            <h4>Run dataset checks</h4>
+                            <p>Compare against the official 25 real + 25 fake apps, verifying ratings, reviews, and developer names.</p>
+                        </div>
+                        <div class="step-item glass-card">
+                            <div class="step-number">3</div>
+                            <h4>Score the risks</h4>
+                            <p>Permissions, malware patterns, clone similarity, and Play Store trust all feed into one risk score.</p>
+                        </div>
+                        <div class="step-item glass-card">
+                            <div class="step-number">4</div>
+                            <h4>Show the verdict</h4>
+                            <p>Results card, detection feed, and evidence kit update instantly so the story is easy to follow.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="safety-note glass-card">
+                    <h4>Strict safety checklist</h4>
+                    <p>The app is only marked SAFE if it passes every rule listed below.</p>
+                    <ul class="safety-checklist">
+                        <li>✅ Exists on Play Store and matches the official package name</li>
+                        <li>✅ Rating ≥ 4.0 with ≥ 1000 verified reviews</li>
+                        <li>✅ Developer name matches dataset entry or official listing</li>
+                        <li>✅ No suspicious permissions / malware signatures</li>
+                        <li>✅ Dataset does not label it as FAKE</li>
+                    </ul>
+                    <p class="disclaimer">Failing any one item flips the verdict to UNSAFE.</p>
+                </div>
+
+                <div class="cta-section">
+                    <h3>Ready to scan?</h3>
+                    <p>Upload an APK or paste the Play Store link. We’ll do the rest.</p>
+                    <div class="cta-buttons">
+                        <button class="analyze-btn primary-cta" onclick="window.location.href='index.html'">
+                            <span>Run Analysis</span>
+                        </button>
+                        <button class="analyze-btn secondary-cta" onclick="window.location.href='history.html'">
+                            <span>View History</span>
+                        </button>
+                        <button class="analyze-btn secondary-cta" onclick="window.location.href='permissions.html'">
+                            <span>Review Permissions</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Built for Pixel Pitch 2025 | BroIsThisFake</p>
+        </footer>
+    </div>
+</body>
+</html>
+

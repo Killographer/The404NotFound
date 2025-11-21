@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BroIsThisFake - Requested Permissions</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-nav">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="index.html" class="nav-link">Analyze</a>
+                <a href="history.html" class="nav-link">History</a>
+                <a href="permissions.html" class="nav-link active">Requested Permissions</a>
+            </div>
+            <h1>🔐 Requested Permissions</h1>
+            <p class="subtitle">Understand what each permission unlocks and why fake banking apps demand them</p>
+        </header>
+
+        <main class="permissions-page">
+            <section class="permission-hero glass-card">
+                <h2>Why permissions matter</h2>
+                <p>
+                    Banking scams rely on overreaching Android permissions to grab OTPs, scrape contact lists, or hijack your camera/mic. 
+                    Our analyzer parses the manifest (similar to Sixo’s client-side APK inspection flow <a href="https://sisik.eu/apk-tool" target="_blank" rel="noopener noreferrer">[source]</a>) and immediately raises the alarm when a suspicious combination appears.
+                </p>
+                <p>
+                    Use this page to quickly compare high-risk permissions vs. the safe defaults you’d expect from a legitimate banking app.
+                </p>
+                <div class="hero-actions">
+                    <a class="analyze-btn" href="index.html"><span>Scan an App Now</span></a>
+                </div>
+            </section>
+
+            <section class="permission-grid">
+                <div class="permission-card glass-card">
+                    <div class="permission-label danger">High Risk</div>
+                    <h3>Data Exfiltration</h3>
+                    <ul>
+                        <li><strong>READ_SMS / SEND_SMS</strong> – steal OTPs or spam contacts</li>
+                        <li><strong>READ_CONTACTS</strong> – harvest victim networks for extortion</li>
+                        <li><strong>READ_CALL_LOG</strong> – map trusted callers to impersonate</li>
+                    </ul>
+                    <p class="card-note">Legit banking apps rarely need direct SMS/contact access in 2025.</p>
+                </div>
+
+                <div class="permission-card glass-card">
+                    <div class="permission-label warning">Surveillance</div>
+                    <h3>Location & Sensors</h3>
+                    <ul>
+                        <li><strong>ACCESS_FINE_LOCATION</strong> – track precise coordinates</li>
+                        <li><strong>CAMERA / RECORD_AUDIO</strong> – capture documents or surroundings</li>
+                        <li><strong>READ_PHONE_STATE</strong> – fingerprint devices and SIMs</li>
+                    </ul>
+                    <p class="card-note">Only grant these when the use case is crystal clear (e.g., cheque scan, verified video-KYC).</p>
+                </div>
+
+                <div class="permission-card glass-card">
+                    <div class="permission-label safe">Baseline</div>
+                    <h3>Expected Access</h3>
+                    <ul>
+                        <li><strong>INTERNET / ACCESS_NETWORK_STATE</strong> – required for API calls</li>
+                        <li><strong>WAKE_LOCK / VIBRATE</strong> – keep device awake briefly, haptic feedback</li>
+                        <li><strong>READ_PHONE_STATE</strong> (limited) – some authenticators still use it</li>
+                    </ul>
+                    <p class="card-note">These are normal, but still logged and scored to maintain accountability.</p>
+                </div>
+            </section>
+
+            <section class="permission-breakdown glass-card">
+                <h3>What you’ll see after every scan</h3>
+                <div class="breakdown-grid">
+                    <div>
+                        <h4>1. Total permissions</h4>
+                        <p>Count of declared permissions. 15+ often indicates bloat or hidden behaviors.</p>
+                    </div>
+                    <div>
+                        <h4>2. Suspicious list</h4>
+                        <p>Any match from our high-risk catalogue is displayed and contributes to the risk score.</p>
+                    </div>
+                    <div>
+                        <h4>3. Evidence kit</h4>
+                        <p>Flags and evidence are embedded inside the Gmail takedown template so you can report offenders rapidly.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="how-to glass-card">
+                <h3>How to audit permissions manually</h3>
+                <ol>
+                    <li>Run the BroIsThisFake analyzer with the APK or package name.</li>
+                    <li>Review the “🔐 Permissions Check” card in the results for the suspicious list.</li>
+                    <li>Cross-check anything unknown with this page to decide whether it’s justified.</li>
+                    <li>Use the auto-generated Gmail template to report malicious packages to Play Support.</li>
+                </ol>
+            </section>
+
+            <section class="cta-section">
+                <h3>Ready to test an APK?</h3>
+                <p>Upload an app now—analysis never leaves your machine.</p>
+                <div class="cta-buttons">
+                    <a class="analyze-btn primary-cta" href="index.html"><span>Start Analysis</span></a>
+                    <a class="analyze-btn secondary-cta" href="history.html"><span>View Past Reports</span></a>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Built for Pixel Pitch 2025 | BroIsThisFake</p>
+        </footer>
+    </div>
+</body>
+</html>
+

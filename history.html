@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BroIsThisFake - Analysis History</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-nav">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="index.html" class="nav-link">Analyze</a>
+                <a href="history.html" class="nav-link active">History</a>
+                <a href="permissions.html" class="nav-link">Requested Permissions</a>
+            </div>
+            <h1>🔍 BroIsThisFake</h1>
+            <p class="subtitle">Analysis History & Detection Feed</p>
+        </header>
+
+        <main>
+            <div class="history-header">
+                <div class="header-actions">
+                    <button class="secondary-btn" onclick="window.location.href='dashboard.html'">
+                        ← Back to Dashboard
+                    </button>
+                    <button class="secondary-btn" onclick="window.location.href='index.html'">
+                        + New Analysis
+                    </button>
+                </div>
+            </div>
+
+            <div class="history-section">
+                <h2>Recent Analyses</h2>
+                <p class="section-description">
+                    View all previous app analyses with detailed results, evidence, and safety assessments.
+                </p>
+
+                <div id="historyList" class="history-list">
+                    <div class="loading-history">
+                        <div class="spinner"></div>
+                        <p>Loading analysis history...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-section glass-card">
+                <h3>Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalAnalyses">0</div>
+                        <div class="stat-label">Total Analyses</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="safeApps">0</div>
+                        <div class="stat-label">Safe Apps</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="flaggedApps">0</div>
+                        <div class="stat-label">Flagged Apps</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="highRiskApps">0</div>
+                        <div class="stat-label">High Risk</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Built for Pixel Pitch 2025 | BroIsThisFake</p>
+        </footer>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        const LOCAL_HISTORY_KEY = 'bro_is_this_fake_history';
+
+        async function loadHistory() {
+            const localEntries = loadLocalHistory();
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/history?limit=50`);
+                const data = await response.json();
+                
+                if (data.success && data.analyses) {
+                    const merged = mergeAnalyses(data.analyses, localEntries);
+                    displayHistory(merged);
+                    updateStats(merged);
+                } else {
+                    handleNoHistory(localEntries);
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                if (localEntries.length) {
+                    displayHistory(localEntries);
+                    updateStats(localEntries);
+                } else {
+                    document.getElementById('historyList').innerHTML = 
+                        '<div class="error-history glass-card"><p>Error loading history. Make sure the backend is running.</p></div>';
+                }
+            }
+        }
+
+        function handleNoHistory(localEntries) {
+            if (localEntries.length) {
+                displayHistory(localEntries);
+                updateStats(localEntries);
+            } else {
+                document.getElementById('historyList').innerHTML = 
+                    '<div class="no-history glass-card"><p>No analysis history yet. Start analyzing apps to see results here.</p></div>';
+            }
+        }
+
+        function loadLocalHistory() {
+            try {
+                const data = JSON.parse(localStorage.getItem(LOCAL_HISTORY_KEY) || '[]');
+                return Array.isArray(data) ? data : [];
+            } catch {
+                return [];
+            }
+        }
+
+        function mergeAnalyses(remoteAnalyses, localAnalyses) {
+            const combined = [];
+            const seen = new Set();
+
+            [...(localAnalyses || []), ...(remoteAnalyses || [])].forEach(item => {
+                if (!item || !item.package_name) return;
+                const key = `${item.package_name}_${item.created_at || ''}_${item.risk_score || 0}`;
+                if (!seen.has(key)) {
+                    combined.push(item);
+                    seen.add(key);
+                }
+            });
+
+            return combined.sort((a, b) => {
+                const dateA = new Date(a.created_at || 0).getTime();
+                const dateB = new Date(b.created_at || 0).getTime();
+                return dateB - dateA;
+            });
+        }
+
+        function displayHistory(analyses) {
+            const historyList = document.getElementById('historyList');
+            
+            if (analyses.length === 0) {
+                historyList.innerHTML = 
+                    '<div class="no-history glass-card"><p>No analysis history yet. Start analyzing apps to see results here.</p></div>';
+                return;
+            }
+
+            historyList.innerHTML = analyses.map(item => {
+                const date = new Date(item.created_at);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                const riskClass = item.risk_level || 'LOW';
+                
+                return `
+                    <div class="history-item glass-card">
+                        <div class="history-item-header">
+                            <div class="history-package">
+                                <strong>${item.package_name || 'Unknown'}</strong>
+                                <span class="history-date">${formattedDate}</span>
+                            </div>
+                            <div class="history-risk">
+                                <span class="risk-chip ${riskClass}">${riskClass}</span>
+                                <span class="risk-score">${item.risk_score || 0}/100</span>
+                            </div>
+                        </div>
+                        <div class="history-item-details">
+                            <p><strong>App Type:</strong> ${item.app_type || 'Unknown'}</p>
+                            <p><strong>Developer:</strong> ${item.developer || 'Unknown'}</p>
+                            <p><strong>Status:</strong> 
+                                <span class="${item.is_fake ? 'status-unsafe' : 'status-safe'}">
+                                    ${item.is_fake ? '⚠️ FLAGGED AS UNSAFE' : '✅ Marked Safe'}
+                                </span>
+                            </p>
+                        </div>
+                        <button class="secondary-btn" onclick="viewDetails('${item.package_name}')">
+                            View Full Report
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStats(analyses) {
+            const total = analyses.length;
+            const safe = analyses.filter(a => !a.is_fake && a.risk_score < 20).length;
+            const flagged = analyses.filter(a => a.is_fake || a.flagged_malicious).length;
+            const highRisk = analyses.filter(a => (a.risk_level === 'HIGH' || a.risk_level === 'CRITICAL')).length;
+
+            document.getElementById('totalAnalyses').textContent = total;
+            document.getElementById('safeApps').textContent = safe;
+            document.getElementById('flaggedApps').textContent = flagged;
+            document.getElementById('highRiskApps').textContent = highRisk;
+        }
+
+        function viewDetails(packageName) {
+            // Redirect to analysis page with package name pre-filled
+            window.location.href = `index.html?package=${encodeURIComponent(packageName)}`;
+        }
+
+        // Load history on page load
+        document.addEventListener('DOMContentLoaded', loadHistory);
+    </script>
+</body>
+</html>
+
