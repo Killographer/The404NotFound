@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BroIsThisFake - Analyze</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-nav">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="index.html" class="nav-link active">Analyze</a>
+                <a href="history.html" class="nav-link">History</a>
+                <a href="permissions.html" class="nav-link">Requested Permissions</a>
+            </div>
+            <h1>🔍 BroIsThisFake</h1>
+            <p class="subtitle">Detect suspicious and fraudulent Android banking apps with AI-powered analysis</p>
+        </header>
+
+        <main class="analysis-layout">
+            <div class="input-section">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchTab('apk')">Upload APK</button>
+                    <button class="tab-btn" onclick="switchTab('package')">Enter Package Name</button>
+                </div>
+
+                <!-- APK Upload Tab -->
+                <div id="apk-tab" class="tab-content active">
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="apkFile" accept=".apk" style="display: none;">
+                        <div class="upload-icon">📱</div>
+                        <p>Click to upload APK file</p>
+                        <p class="upload-hint">or drag and drop here</p>
+                        <p class="file-name" id="fileName"></p>
+                    </div>
+                    <button class="analyze-btn" onclick="analyzeAPK()">
+                        <span>🔍 Scan for Fake Banking Apps</span>
+                    </button>
+                </div>
+
+                <!-- Package Name Tab -->
+                <div id="package-tab" class="tab-content">
+                    <div class="input-group">
+                        <label for="packageInput">Package Name</label>
+                        <input 
+                            type="text" 
+                            id="packageInput" 
+                            placeholder="e.g., com.example.bankapp"
+                            class="package-input"
+                        >
+                        <small>Enter the Android app package name to analyze</small>
+                    </div>
+                    <div class="input-group">
+                        <label for="playstoreUrlInput">Play Store Link (Optional)</label>
+                        <input 
+                            type="url" 
+                            id="playstoreUrlInput" 
+                            placeholder="https://play.google.com/store/apps/details?id=com.example.bankapp"
+                            class="package-input"
+                        >
+                        <small>Paste the official Play Store listing link. We'll verify the URL, package name, and developer.</small>
+                    </div>
+                    <button class="analyze-btn" onclick="analyzePackage()">
+                        <span>🔍 Scan for Fake Banking Apps</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results" class="results-section" style="display: none;">
+                <h2>Analysis Results</h2>
+                
+                <div class="risk-badge" id="riskBadge">
+                    <span id="riskLevel">-</span>
+                    <div class="risk-score-container">
+                        <div class="risk-score-header">
+                            <span id="riskScore">Risk Score: 0/100</span>
+                            <span id="riskPercentage">0%</span>
+                        </div>
+                        <div class="risk-progress-bar">
+                            <div class="risk-progress-fill" id="riskProgressFill"></div>
+                        </div>
+                        <div class="risk-breakdown" id="riskBreakdown">
+                            <p class="breakdown-title">Score Breakdown:</p>
+                            <div class="breakdown-item">
+                                <span>Permissions:</span>
+                                <span id="permScore">0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Malware Scan:</span>
+                                <span id="malwareScore">0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Package Similarity:</span>
+                                <span id="similarityScore">0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Play Store:</span>
+                                <span id="playstoreScore">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h3>Package Information</h3>
+                    <p><strong>Package:</strong> <span id="resultPackage">-</span></p>
+                    <p><strong>Status:</strong> <span id="resultStatus">-</span></p>
+                    <p><strong>App Type:</strong> <span id="appType">-</span></p>
+                    <p id="developerDisclaimer" class="developer-disclaimer" style="display: none;"></p>
+                </div>
+
+                <!-- Evidence Kit -->
+                <div class="result-card">
+                    <h3>Evidence Kit</h3>
+                    <p class="evidence-note">
+                        This section summarises why the app was flagged and prepares a ready-to-use takedown email.
+                    </p>
+                    <div class="evidence-section">
+                        <h4>Auto-generated Gmail takedown request</h4>
+                        <label for="emailSubject"><strong>Subject</strong></label>
+                        <input type="text" id="emailSubject" class="email-input" readonly>
+                        <label for="emailBody"><strong>Body</strong></label>
+                        <textarea id="emailBody" class="email-body" rows="6" readonly></textarea>
+                        <div class="email-actions">
+                            <button class="secondary-btn" onclick="copyTakedownEmail()">Copy Email</button>
+                            <a id="gmailLink" class="secondary-btn" target="_blank" rel="noopener noreferrer">
+                                Open in Gmail
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checks-container">
+                    <div class="check-item">
+                        <h4>🔐 Permissions Check</h4>
+                        <p id="permResult">-</p>
+                        <ul id="permList"></ul>
+                    </div>
+
+                    <div class="check-item">
+                        <h4>🛡️ Malware Scan</h4>
+                        <p id="malwareResult">-</p>
+                        <ul id="malwareList"></ul>
+                        <div id="malwareDetails"></div>
+                    </div>
+
+                    <div class="check-item">
+                        <h4>🔗 Package Similarity</h4>
+                        <p id="similarityResult">-</p>
+                        <ul id="similarityList"></ul>
+                    </div>
+
+                    <div class="check-item">
+                        <h4>🏪 Play Store Check</h4>
+                        <p id="playstoreResult">-</p>
+                        <div id="playstoreDetails"></div>
+                        <div class="match-flags">
+                            <p><strong>Package Match:</strong> <span id="packageMatchStatus">-</span></p>
+                            <p><strong>Developer Match:</strong> <span id="developerMatchStatus">-</span></p>
+                        </div>
+                        <div id="reviewExtracts" class="review-extracts"></div>
+                        <div id="screenshotsInfo" class="screenshots-info"></div>
+                    </div>
+                </div>
+
+                <!-- Detection Feed -->
+                <div class="detection-feed" id="detectionFeed">
+                    <h3>Detection Feed</h3>
+                    <p class="feed-note">Recent analyses from this tool (local to this device).</p>
+                    <div id="feedList" class="feed-list"></div>
+                </div>
+
+                <button class="analyze-btn" onclick="resetAnalysis()">Analyze Another App</button>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Analyzing app...</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>Built for Pixel Pitch 2025 | BroIsThisFake</p>
+        </footer>
+    </div>
+
+    <!-- Already Flagged Popup -->
+    <div id="flaggedPopup" class="popup-overlay" style="display: none;">
+        <div class="popup">
+            <h3>App Already Flagged</h3>
+            <p id="flaggedMessage">
+                This app has already been flagged as malicious in a previous analysis.
+            </p>
+            <button class="analyze-btn" onclick="closeFlaggedPopup()">OK</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
